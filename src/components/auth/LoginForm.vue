@@ -3,11 +3,11 @@ import { useAuthStore } from '@/stores/auth';
 import { Field, Form } from 'vee-validate';
 import * as Yup from 'yup';
 import TextInput from '@/components/forms/form-validation/TextInput.vue';
-
+import { googleSdkLoaded } from 'vue3-google-login'
 
 export default {
     name: 'LoginForm',
-    components: { Field, TextInput },
+    components: { Field, TextInput},
 
     data: function() {
         return {
@@ -29,6 +29,77 @@ export default {
         };
     },
     methods: {
+
+        async loginWithGoogle() {
+      try {
+        // Wywołaj OAuth Google
+        const authResponse = await this.getOAuthToken("google");
+        if (authResponse) {
+          await this.sendTokenToBackend("google", authResponse.token);
+        }
+      } catch (error) {
+        console.error("Błąd logowania przez Google:", error);
+      }
+    },
+    async loginWithFacebook() {
+      try {
+        // Wywołaj OAuth Facebook
+        const authResponse = await this.getOAuthToken("facebook");
+        if (authResponse) {
+          await this.sendTokenToBackend("facebook", authResponse.token);
+        }
+      } catch (error) {
+        console.error("Błąd logowania przez Facebook:", error);
+      }
+    },
+    async getOAuthToken(provider) {
+      return new Promise((resolve, reject) => {
+        const clientId =
+          provider === "google"
+            ? "461351201408-md78et92bsbta0i0554op41shmqo03j5.apps.googleusercontent.com" // Podmień na swoje ID klienta
+            : "1016886966910956"; // Podmień na swoje ID aplikacji
+
+        const redirectUri = "http://localhost:5173"; // Twój adres powrotny
+        const authUrl =
+          provider === "google"
+            ? `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=email profile`
+            : `https://www.facebook.com/v12.0/dialog/oauth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=email`;
+
+        // Otwórz popup OAuth
+        const popup = window.open(authUrl, "_blank", "width=500,height=600");
+        const interval = setInterval(() => {
+          try {
+            const popupUrl = popup.location.href;
+            if (popupUrl.includes("access_token")) {
+              const token = new URL(popupUrl).hash
+                .substring(1)
+                .split("&")
+                .find((param) => param.startsWith("access_token"))
+                .split("=")[1];
+              popup.close();
+              clearInterval(interval);
+              resolve({ token });
+            }
+          } catch (error) {
+            // Kontynuuj dopóki popup jest otwarty
+          }
+        }, 500);
+      });
+    },
+    async sendTokenToBackend(provider, token) {
+      try {
+        const response = await axios.post("http://localhost:8000/api/oauth", {
+          provider,
+          token,
+        });
+        console.log("Dane użytkownika:", response.data);
+        alert("Zalogowano pomyślnie!");
+      } catch (error) {
+        console.error("Błąd weryfikacji tokena na backendzie:", error);
+        alert("Logowanie nie powiodło się.");
+      }
+    },
+
         onSubmit() {
             this.$nextTick(async () => {
                 this.$refs.form.validate();
@@ -78,13 +149,13 @@ export default {
 <template>
     <v-row class="d-flex mb-3">
         <v-col cols="6" sm="6" class="pr-2">
-            <v-btn variant="outlined" size="large" class="border text-subtitle-1" block>
+            <v-btn variant="outlined" size="large" class="border text-subtitle-1" block @click="loginWithGoogle">
                 <img src="@/assets/images/svgs/google-icon.svg" height="16" class="mr-2" alt="google" />
                 <span class="d-sm-flex d-none mr-1">Użyj konta</span>Google
             </v-btn>
         </v-col>
         <v-col cols="6" sm="6" class="pl-2">
-            <v-btn variant="outlined" size="large" class="border text-subtitle-1" block>
+            <v-btn variant="outlined" size="large" class="border text-subtitle-1" block  @click="loginWithFacebook">
                 <img src="@/assets/images/svgs/facebook-icon.svg" width="25" height="25" class="mr-1" alt="facebook" />
                 <span class="d-sm-flex d-none mr-1">Użyj konta</span>FB
             </v-btn>

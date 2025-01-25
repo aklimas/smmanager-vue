@@ -10,6 +10,7 @@
     },
     "dependencies": {
         "@healerlab/vue3-facebook-login": "^0.1.7",
+        "@react-oauth/google": "^0.12.1",
         "@tiptap/pm": "^2.0.0-beta.220",
         "@tiptap/starter-kit": "2.0.0-beta.220",
         "@tiptap/vue-3": "2.0.0-beta.220",
