@@ -1,0 +1,5 @@
+{
+    "require": {
+        "hwi/oauth-bundle": "^2.3"
+    }
+}
