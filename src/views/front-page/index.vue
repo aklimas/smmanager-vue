@@ -1,47 +1,34 @@
 <template>
     <div>
-        <header id="header" class="header d-flex align-items-center fixed-top">
-    <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
-
-      <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
-        <h1 class="sitename">iLanding</h1>
-      </a>
-
-      <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="#hero" class="active">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#pricing">Pricing</a></li>
-          <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              <li><a href="#">Dropdown 1</a></li>
-              <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                <ul>
-                  <li><a href="#">Deep Dropdown 1</a></li>
-                  <li><a href="#">Deep Dropdown 2</a></li>
-                  <li><a href="#">Deep Dropdown 3</a></li>
-                  <li><a href="#">Deep Dropdown 4</a></li>
-                  <li><a href="#">Deep Dropdown 5</a></li>
-                </ul>
-              </li>
-              <li><a href="#">Dropdown 2</a></li>
-              <li><a href="#">Dropdown 3</a></li>
-              <li><a href="#">Dropdown 4</a></li>
-            </ul>
-          </li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav>
-
-      <a class="btn-getstarted" href="index.html#about">Get Started</a>
-
-    </div>
-  </header>
+      <header id="header" class="header d-flex align-items-center fixed-top">
+      <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+        <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
+          <h1 class="sitename">PostMaster</h1>
+        </a>
+        <nav id="navmenu" class="navmenu">
+          <ul>
+            <li><a href="#hero" class="active">Strona główna</a></li>
+            <li><a href="#about">O nas</a></li>
+            <li><a href="#features">Funkcje</a></li>
+            <li><a href="#services">Usługi</a></li>
+            <li><a href="#pricing">Cennik</a></li>
+            <li class="dropdown"><a href="#"><span>Więcej</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>
+                <li><a href="#">Opcja 1</a></li>
+                <li class="dropdown"><a href="#"><span>Opcja 2</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                  <ul>
+                    <li><a href="#">Podopcja 1</a></li>
+                    <li><a href="#">Podopcja 2</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li><a href="#contact">Kontakt</a></li>
+          </ul>
+        </nav><!-- .navmenu -->
+        <a class="btn-getstarted" href="#about">Zacznij teraz</a>
+      </div>
+    </header><!-- End Header -->
 
   <main class="main">
 
@@ -54,29 +41,24 @@
           <div class="col-lg-6">
             <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
               <div class="company-badge mb-4">
-                <i class="bi bi-gear-fill me-2"></i>
-                Working for your success
+                  <i class="bi bi-gear-fill me-2"></i>
+                  Pracujemy dla Twojego sukcesu
+                </div>
+                <h1 class="mb-4">
+                  Witaj w PostMaster<br>
+                  Twórz posty łatwo i szybko<br>
+                </h1>
+                <p class="mb-4 mb-md-5">
+                  PostMaster to narzędzie, które ułatwia tworzenie i zarządzanie postami na media społecznościowe. Nasz zespół ekspertów jest gotowy, aby pomóc Ci osiągnąć najlepsze wyniki.
+                </p>
+                <div class="hero-buttons">
+                  <a href="#about" class="btn btn-primary me-0 me-sm-2 mx-1">Zacznij teraz</a>
+                  <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="btn btn-link mt-2 mt-sm-0 glightbox">
+                    <i class="bi bi-play-circle me-1"></i>
+                    Obejrzyj wideo
+                  </a>
+                </div>
               </div>
-
-              <h1 class="mb-4">
-                Maecenas Vitae <br>
-                Consectetur Led <br>
-                <span class="accent-text">Vestibulum Ante</span>
-              </h1>
-
-              <p class="mb-4 mb-md-5">
-                Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt.
-                Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.
-              </p>
-
-              <div class="hero-buttons">
-                <a href="#about" class="btn btn-primary me-0 me-sm-2 mx-1">Get Started</a>
-                <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="btn btn-link mt-2 mt-sm-0 glightbox">
-                  <i class="bi bi-play-circle me-1"></i>
-                  Play Video
-                </a>
-              </div>
-            </div>
           </div>
 
           <div class="col-lg-6">
@@ -92,7 +74,7 @@
                   <img src="assets/img/avatar-5.webp" alt="Customer 5" class="avatar">
                   <span class="avatar more">12+</span>
                 </div>
-                <p class="mb-0 mt-2">12,000+ lorem ipsum dolor sit amet consectetur adipiscing elit</p>
+                <span class="badge-text">Zaufany przez ponad 12,000 klientów</span>
               </div>
             </div>
           </div>
