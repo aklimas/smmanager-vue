@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import FrontPageRoutes from './FrontPageRoutes';
 import MainRoutes from './MainRoutes';
 import AuthRoutes from './AuthRoutes';
 import StartRoutes from './StartRoutes';
@@ -11,6 +12,7 @@ export const router = createRouter({
             path: '/:pathMatch(.*)*',
             component: () => import('@/views/authentication/Error.vue')
         },
+        FrontPageRoutes,
         MainRoutes,
         AuthRoutes,
         StartRoutes
@@ -19,7 +21,7 @@ export const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     // redirect to login page if not logged in and trying to access a restricted page
-    const publicPages = ['/auth/login'];
+    const publicPages = ['/auth/login','/'];
     const authRequired = !publicPages.includes(to.path);
     const auth: any = useAuthStore();
     if (to.matched.some((record) => record.meta.requiresAuth)) {

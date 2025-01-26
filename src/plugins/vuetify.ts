@@ -33,7 +33,7 @@ export default createVuetify({
         messages: { pl },
     },
     theme: {
-        defaultTheme: 'DARK_CYAN_THEME',
+        defaultTheme: 'BLUE_THEME',
         themes: {
             BLUE_THEME,
             AQUA_THEME,

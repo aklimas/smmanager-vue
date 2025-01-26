@@ -46,13 +46,39 @@ export default {
             logo_alignment: 'center', // Logo: 'left', ''
                // Szerokość w pikselach (opcjonalne) }
   });
+
+  window.fbAsyncInit = () => {
+      FB.init({
+        appId: '1016886966910956', // Wstaw swoje App ID z Facebook Developer Console
+        cookie: true,          // Używaj ciasteczek, aby umożliwić sesje
+        xfbml: true,           // Włącz obsługę XFBML
+        version:  'v21.0'      // Wersja Graph API
+      });
+    };
+
   },
     methods: {
-      triggerGoogleSignIn() {
+        loginWithFacebook() {
+      // Wywołaj logowanie Facebooka
+      FB.login((response) => {
+        if (response.authResponse) {
+          const accessToken = response.authResponse.accessToken;
 
-        window.google.accounts.id.prompt();
+          // Wyślij token na backend
+          fetch('http://twoj-backend-url.com/api/auth/facebook', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: accessToken }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              console.log('Autoryzacja zakończona:', data);
+            });
+        } else {
+          console.error('Użytkownik anulował logowanie.');
+        }
+      }, { scope: 'email,public_profile' });
     },
-
       async handleCredentialResponse(response) {
         const token = response.credential;
         const authStore = useAuthStore();
@@ -103,9 +129,10 @@ export default {
         </v-col>
     </v-row>
     <div class="d-flex align-center text-center mb-6">
-        <div class="text-h6 w-100 px-5 font-weight-regular auth-divider position-relative">
+        <div class="text-h6 w-100 px-5 font-weight-regular auth-divider position-relative" @click="loginWithFacebook">
             <span class="bg-surface px-5 py-3 position-relative">lub zaloguj się tradycyjnie</span>
         </div>
+
     </div>
 
     <v-form ref="form" @keydown="handleKeyDown">

@@ -8,7 +8,7 @@ const MainRoutes = {
     children: [
         {
             name: 'Starter',
-            path: '/',
+            path: '/main',
             meta: {
                 requiresAuth: true
             },
