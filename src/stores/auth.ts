@@ -37,6 +37,26 @@ export const useAuthStore = defineStore({
 
         },
 
+        async loginGoogle(token: string) {
+            const user = await fetchWrapper.post(`${baseUrl}/api/auth/google`, { token })
+            if (user.code !== 401) {
+                this.user = user;
+                localStorage.setItem('user', JSON.stringify(user));
+                await settingsDesktopStore().get();
+                if(this.user.accounts > 0) {
+                    router.push(this.returnUrl || '/dashboards/minimal');
+                }else{
+                    router.push(this.returnUrl || '/social-media/welcome');
+                }
+
+                
+            } else {
+                return Promise.reject(user.message);
+            }
+
+
+        },
+
         async register(email: string, password: string) {
             const user = await axios.post(`${baseUrl}/api/register`, { email, password });
 

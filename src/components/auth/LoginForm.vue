@@ -28,76 +28,38 @@ export default {
             isSubmitting:false
         };
     },
+    mounted() {
+    // Inicjalizacja Google SDK
+    window.google.accounts.id.initialize({
+      client_id: '461351201408-md78et92bsbta0i0554op41shmqo03j5.apps.googleusercontent.com', // Wstaw swój Client ID
+      
+      callback: this.handleCredentialResponse,
+    });
+
+    // Renderowanie przycisku Google
+    window.google.accounts.id.renderButton(
+      document.getElementById('googleSignInButton'),
+      {     theme: 'filled_black',       // Wygląd: 'outline', '', 'filled_black'
+            size: 'medium',          // Rozmiar: 'small', 'medium', 'large'
+            text: 'signin',    // Tekst: 'signin_with', '', 'continue_with', ''
+            shape: 'rectangular',          // Kształt: 'rectangular', 'pill', 'circle', 'square'
+            logo_alignment: 'center', // Logo: 'left', ''
+               // Szerokość w pikselach (opcjonalne) }
+  });
+  },
     methods: {
+      triggerGoogleSignIn() {
 
-        async loginWithGoogle() {
-      try {
-        // Wywołaj OAuth Google
-        const authResponse = await this.getOAuthToken("google");
-        if (authResponse) {
-          await this.sendTokenToBackend("google", authResponse.token);
-        }
-      } catch (error) {
-        console.error("Błąd logowania przez Google:", error);
-      }
+        window.google.accounts.id.prompt();
     },
-    async loginWithFacebook() {
-      try {
-        // Wywołaj OAuth Facebook
-        const authResponse = await this.getOAuthToken("facebook");
-        if (authResponse) {
-          await this.sendTokenToBackend("facebook", authResponse.token);
-        }
-      } catch (error) {
-        console.error("Błąd logowania przez Facebook:", error);
-      }
-    },
-    async getOAuthToken(provider) {
-      return new Promise((resolve, reject) => {
-        const clientId =
-          provider === "google"
-            ? "461351201408-md78et92bsbta0i0554op41shmqo03j5.apps.googleusercontent.com" // Podmień na swoje ID klienta
-            : "1016886966910956"; // Podmień na swoje ID aplikacji
 
-        const redirectUri = "http://localhost:5173"; // Twój adres powrotny
-        const authUrl =
-          provider === "google"
-            ? `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=email profile`
-            : `https://www.facebook.com/v12.0/dialog/oauth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=email`;
-
-        // Otwórz popup OAuth
-        const popup = window.open(authUrl, "_blank", "width=500,height=600");
-        const interval = setInterval(() => {
-          try {
-            const popupUrl = popup.location.href;
-            if (popupUrl.includes("access_token")) {
-              const token = new URL(popupUrl).hash
-                .substring(1)
-                .split("&")
-                .find((param) => param.startsWith("access_token"))
-                .split("=")[1];
-              popup.close();
-              clearInterval(interval);
-              resolve({ token });
-            }
-          } catch (error) {
-            // Kontynuuj dopóki popup jest otwarty
-          }
-        }, 500);
-      });
-    },
-    async sendTokenToBackend(provider, token) {
-      try {
-        const response = await axios.post("http://localhost:8000/api/oauth", {
-          provider,
-          token,
+      async handleCredentialResponse(response) {
+        const token = response.credential;
+        const authStore = useAuthStore();
+        return await authStore.loginGoogle(token).catch((error) => {
+            this.errors = error;
+            this.isSubmitting = false;
         });
-        console.log("Dane użytkownika:", response.data);
-        alert("Zalogowano pomyślnie!");
-      } catch (error) {
-        console.error("Błąd weryfikacji tokena na backendzie:", error);
-        alert("Logowanie nie powiodło się.");
-      }
     },
 
         onSubmit() {
@@ -118,26 +80,6 @@ export default {
                 this.onSubmit();
             }
         },
-        async onLoginSuccess(response) {
-      const token = response.credential; // Token JWT Google
-      try {
-        const res = await fetch('/api/auth/google', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token }),
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          // Obsłuż logowanie (np. zapisz token)
-          console.log('Zalogowano:', data);
-        }
-      } catch (error) {
-        console.error('Błąd podczas logowania:', error);
-      }
-    },
     onLoginError(error) {
       console.error('Błąd Google Login:', error);
     },
@@ -147,12 +89,11 @@ export default {
 </script>
 
 <template>
+
+
     <v-row class="d-flex mb-3">
         <v-col cols="6" sm="6" class="pr-2">
-            <v-btn variant="outlined" size="large" class="border text-subtitle-1" block @click="loginWithGoogle">
-                <img src="@/assets/images/svgs/google-icon.svg" height="16" class="mr-2" alt="google" />
-                <span class="d-sm-flex d-none mr-1">Użyj konta</span>Google
-            </v-btn>
+          <div id="googleSignInButton"></div>
         </v-col>
         <v-col cols="6" sm="6" class="pl-2">
             <v-btn variant="outlined" size="large" class="border text-subtitle-1" block  @click="loginWithFacebook">
@@ -197,3 +138,8 @@ export default {
         </div>
     </v-form>
 </template>
+<style>
+#googleSignInButton{
+  background: none;
+}
+</style>
